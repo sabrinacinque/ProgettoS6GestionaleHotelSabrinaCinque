@@ -159,3 +159,7 @@ FROM
     [dbo].[Prenotazioni]
 WHERE 
     tipologia_soggiorno = 'pensione completa';
+
+SELECT * FROM Prenotazioni;
+
+USE GestionaleHotel;

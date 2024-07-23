@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ProgettoS6GestionaleHotelSabrinaCinque.Models.Prenotazione>
+
+@{
+    ViewData["Title"] = "Prenotazioni";
+}
+
+<h2>Prenotazioni</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crea nuova prenotazione</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClienteId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CameraId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataPrenotazione)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipologiaSoggiorno)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClienteId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CameraId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataPrenotazione)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipologiaSoggiorno)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Modifica</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Dettagli</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Elimina</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
