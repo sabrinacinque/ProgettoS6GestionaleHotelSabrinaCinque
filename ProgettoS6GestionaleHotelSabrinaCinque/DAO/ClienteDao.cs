@@ -26,17 +26,19 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 {
                     while (reader.Read())
                     {
-                        clienti.Add(new Cliente
+                        var cliente = new Cliente
                         {
-                            Id = reader.GetInt32(0),
-                            CodiceFiscale = reader.GetString(1),
-                            Cognome = reader.GetString(2),
-                            Nome = reader.GetString(3),
-                            Citta = reader.GetString(4),
-                            Provincia = reader.GetString(5),
-                            Email = reader.GetString(6),
-                            Cellulare = reader.GetString(7)
-                        });
+                            Id = reader.GetInt32(reader.GetOrdinal("id")),
+                            CodiceFiscale = reader.GetString(reader.GetOrdinal("codice_fiscale")),
+                            Cognome = reader.GetString(reader.GetOrdinal("cognome")),
+                            Nome = reader.GetString(reader.GetOrdinal("nome")),
+                            Città = reader.GetString(reader.GetOrdinal("città")),
+                            Provincia = reader.GetString(reader.GetOrdinal("provincia")),
+                            Email = reader.GetString(reader.GetOrdinal("email")),
+                            Cellulare = reader.GetString(reader.GetOrdinal("cellulare"))
+                        };
+
+                        clienti.Add(cliente);
                     }
                 }
             }
@@ -51,24 +53,24 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var query = "SELECT * FROM Clienti WHERE Id = @Id";
+                var query = "SELECT * FROM Clienti WHERE id = @id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.Parameters.AddWithValue("@id", id);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             cliente = new Cliente
                             {
-                                Id = reader.GetInt32(0),
-                                CodiceFiscale = reader.GetString(1),
-                                Cognome = reader.GetString(2),
-                                Nome = reader.GetString(3),
-                                Citta = reader.GetString(4),
-                                Provincia = reader.GetString(5),
-                                Email = reader.GetString(6),
-                                Cellulare = reader.GetString(7)
+                                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                                CodiceFiscale = reader.GetString(reader.GetOrdinal("codice_fiscale")),
+                                Cognome = reader.GetString(reader.GetOrdinal("cognome")),
+                                Nome = reader.GetString(reader.GetOrdinal("nome")),
+                                Città = reader.GetString(reader.GetOrdinal("città")),
+                                Provincia = reader.GetString(reader.GetOrdinal("provincia")),
+                                Email = reader.GetString(reader.GetOrdinal("email")),
+                                Cellulare = reader.GetString(reader.GetOrdinal("cellulare"))
                             };
                         }
                     }
@@ -84,17 +86,17 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             {
                 conn.Open();
                 var query = @"
-                    INSERT INTO Clienti (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Cellulare)
-                    VALUES (@CodiceFiscale, @Cognome, @Nome, @Citta, @Provincia, @Email, @Cellulare)";
+                    INSERT INTO Clienti (codice_fiscale, cognome, nome, città, provincia, email, cellulare)
+                    VALUES (@codice_fiscale, @cognome, @nome, @città, @provincia, @email, @cellulare)";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@CodiceFiscale", cliente.CodiceFiscale);
-                    cmd.Parameters.AddWithValue("@Cognome", cliente.Cognome);
-                    cmd.Parameters.AddWithValue("@Nome", cliente.Nome);
-                    cmd.Parameters.AddWithValue("@Citta", cliente.Citta);
-                    cmd.Parameters.AddWithValue("@Provincia", cliente.Provincia);
-                    cmd.Parameters.AddWithValue("@Email", cliente.Email);
-                    cmd.Parameters.AddWithValue("@Cellulare", cliente.Cellulare);
+                    cmd.Parameters.AddWithValue("@codice_fiscale", cliente.CodiceFiscale);
+                    cmd.Parameters.AddWithValue("@cognome", cliente.Cognome);
+                    cmd.Parameters.AddWithValue("@nome", cliente.Nome);
+                    cmd.Parameters.AddWithValue("@città", cliente.Città);
+                    cmd.Parameters.AddWithValue("@provincia", cliente.Provincia);
+                    cmd.Parameters.AddWithValue("@email", cliente.Email);
+                    cmd.Parameters.AddWithValue("@cellulare", cliente.Cellulare);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -107,24 +109,38 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 conn.Open();
                 var query = @"
                     UPDATE Clienti SET 
-                    CodiceFiscale = @CodiceFiscale,
-                    Cognome = @Cognome,
-                    Nome = @Nome,
-                    Citta = @Citta,
-                    Provincia = @Provincia,
-                    Email = @Email,
-                    Cellulare = @Cellulare
-                    WHERE Id = @Id";
+                    codice_fiscale = @codice_fiscale, 
+                    cognome = @cognome, 
+                    nome = @nome, 
+                    città = @città, 
+                    provincia = @provincia, 
+                    email = @email, 
+                    cellulare = @cellulare
+                    WHERE id = @id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@CodiceFiscale", cliente.CodiceFiscale);
-                    cmd.Parameters.AddWithValue("@Cognome", cliente.Cognome);
-                    cmd.Parameters.AddWithValue("@Nome", cliente.Nome);
-                    cmd.Parameters.AddWithValue("@Citta", cliente.Citta);
-                    cmd.Parameters.AddWithValue("@Provincia", cliente.Provincia);
-                    cmd.Parameters.AddWithValue("@Email", cliente.Email);
-                    cmd.Parameters.AddWithValue("@Cellulare", cliente.Cellulare);
-                    cmd.Parameters.AddWithValue("@Id", cliente.Id);
+                    cmd.Parameters.AddWithValue("@codice_fiscale", cliente.CodiceFiscale);
+                    cmd.Parameters.AddWithValue("@cognome", cliente.Cognome);
+                    cmd.Parameters.AddWithValue("@nome", cliente.Nome);
+                    cmd.Parameters.AddWithValue("@città", cliente.Città);
+                    cmd.Parameters.AddWithValue("@provincia", cliente.Provincia);
+                    cmd.Parameters.AddWithValue("@email", cliente.Email);
+                    cmd.Parameters.AddWithValue("@cellulare", cliente.Cellulare);
+                    cmd.Parameters.AddWithValue("@id", cliente.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var query = "DELETE FROM Clienti WHERE id = @id";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }

@@ -25,7 +25,51 @@
             <th></th>
         </tr>
     </thead>
-    <tb
-        
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cognome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CodiceFiscale)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Modifica</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Dettagli</a> |
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete(@item.Id)">Elimina</button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function confirmDelete(id) {
+            if (confirm("Sei sicuro di voler eliminare questo cliente?")) {
+                $.ajax({
+                    url: '@Url.Action("Delete", "Clienti")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (result) {
+                        if (result.success) {
+                            alert("Cliente eliminato con successo.");
+                            location.reload();
+                        } else {
+                            alert("Errore durante l'eliminazione del cliente: " + result.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Errore durante l'eliminazione del cliente.");
+                    }
+                });
+            }
+        }
+    </script>
+}

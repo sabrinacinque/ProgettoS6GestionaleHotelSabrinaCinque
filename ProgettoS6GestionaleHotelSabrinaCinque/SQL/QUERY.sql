@@ -160,6 +160,6 @@ FROM
 WHERE 
     tipologia_soggiorno = 'pensione completa';
 
-SELECT * FROM Prenotazioni;
+SELECT * FROM Clienti;
 
 USE GestionaleHotel;

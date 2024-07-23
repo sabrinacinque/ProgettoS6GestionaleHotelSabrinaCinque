@@ -26,12 +26,14 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 {
                     while (reader.Read())
                     {
-                        camere.Add(new Camera
+                        var camera = new Camera
                         {
-                            Id = reader.GetInt32(0),
-                            Descrizione = reader.GetString(1),
-                            Tipologia = reader.GetString(2)
-                        });
+                            Id = reader.GetInt32(reader.GetOrdinal("id")),
+                            Descrizione = reader.GetString(reader.GetOrdinal("descrizione")),
+                            Tipologia = reader.GetString(reader.GetOrdinal("tipologia"))
+                        };
+
+                        camere.Add(camera);
                     }
                 }
             }
@@ -46,19 +48,19 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var query = "SELECT * FROM Camere WHERE Id = @Id";
+                var query = "SELECT * FROM Camere WHERE id = @id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.Parameters.AddWithValue("@id", id);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             camera = new Camera
                             {
-                                Id = reader.GetInt32(0),
-                                Descrizione = reader.GetString(1),
-                                Tipologia = reader.GetString(2)
+                                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                                Descrizione = reader.GetString(reader.GetOrdinal("descrizione")),
+                                Tipologia = reader.GetString(reader.GetOrdinal("tipologia"))
                             };
                         }
                     }
@@ -74,12 +76,12 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             {
                 conn.Open();
                 var query = @"
-                    INSERT INTO Camere (Descrizione, Tipologia)
-                    VALUES (@Descrizione, @Tipologia)";
+                    INSERT INTO Camere (descrizione, tipologia)
+                    VALUES (@descrizione, @tipologia)";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Descrizione", camera.Descrizione);
-                    cmd.Parameters.AddWithValue("@Tipologia", camera.Tipologia);
+                    cmd.Parameters.AddWithValue("@descrizione", camera.Descrizione);
+                    cmd.Parameters.AddWithValue("@tipologia", camera.Tipologia);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -92,14 +94,28 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 conn.Open();
                 var query = @"
                     UPDATE Camere SET 
-                    Descrizione = @Descrizione,
-                    Tipologia = @Tipologia
-                    WHERE Id = @Id";
+                    descrizione = @descrizione, 
+                    tipologia = @tipologia
+                    WHERE id = @id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Descrizione", camera.Descrizione);
-                    cmd.Parameters.AddWithValue("@Tipologia", camera.Tipologia);
-                    cmd.Parameters.AddWithValue("@Id", camera.Id);
+                    cmd.Parameters.AddWithValue("@descrizione", camera.Descrizione);
+                    cmd.Parameters.AddWithValue("@tipologia", camera.Tipologia);
+                    cmd.Parameters.AddWithValue("@id", camera.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var query = "DELETE FROM Camere WHERE id = @id";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
