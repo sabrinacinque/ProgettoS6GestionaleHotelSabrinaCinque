@@ -9,5 +9,6 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
         Servizio GetById(int id);
         void Add(Servizio servizio);
         void Update(Servizio servizio);
+        void Delete(int id);
     }
 }

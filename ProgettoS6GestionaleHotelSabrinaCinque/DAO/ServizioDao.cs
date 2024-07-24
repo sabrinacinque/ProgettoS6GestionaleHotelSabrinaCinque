@@ -26,12 +26,14 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 {
                     while (reader.Read())
                     {
-                        servizi.Add(new Servizio
+                        var servizio = new Servizio
                         {
-                            Id = reader.GetInt32(0),
-                            Descrizione = reader.GetString(1),
-                            Prezzo = reader.GetDecimal(2)
-                        });
+                            Id = reader.GetInt32(reader.GetOrdinal("id")),
+                            Descrizione = reader.GetString(reader.GetOrdinal("descrizione")),
+                            Prezzo = reader.GetDecimal(reader.GetOrdinal("prezzo"))
+                        };
+
+                        servizi.Add(servizio);
                     }
                 }
             }
@@ -46,19 +48,19 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var query = "SELECT * FROM Servizi WHERE Id = @Id";
+                var query = "SELECT * FROM Servizi WHERE id = @id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.Parameters.AddWithValue("@id", id);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             servizio = new Servizio
                             {
-                                Id = reader.GetInt32(0),
-                                Descrizione = reader.GetString(1),
-                                Prezzo = reader.GetDecimal(2)
+                                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                                Descrizione = reader.GetString(reader.GetOrdinal("descrizione")),
+                                Prezzo = reader.GetDecimal(reader.GetOrdinal("prezzo"))
                             };
                         }
                     }
@@ -74,12 +76,12 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             {
                 conn.Open();
                 var query = @"
-                    INSERT INTO Servizi (Descrizione, Prezzo)
-                    VALUES (@Descrizione, @Prezzo)";
+                    INSERT INTO Servizi (descrizione, prezzo)
+                    VALUES (@descrizione, @prezzo)";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Descrizione", servizio.Descrizione);
-                    cmd.Parameters.AddWithValue("@Prezzo", servizio.Prezzo);
+                    cmd.Parameters.AddWithValue("@descrizione", servizio.Descrizione);
+                    cmd.Parameters.AddWithValue("@prezzo", servizio.Prezzo);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -92,14 +94,28 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 conn.Open();
                 var query = @"
                     UPDATE Servizi SET 
-                    Descrizione = @Descrizione,
-                    Prezzo = @Prezzo
-                    WHERE Id = @Id";
+                    descrizione = @descrizione, 
+                    prezzo = @prezzo
+                    WHERE id = @id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Descrizione", servizio.Descrizione);
-                    cmd.Parameters.AddWithValue("@Prezzo", servizio.Prezzo);
-                    cmd.Parameters.AddWithValue("@Id", servizio.Id);
+                    cmd.Parameters.AddWithValue("@descrizione", servizio.Descrizione);
+                    cmd.Parameters.AddWithValue("@prezzo", servizio.Prezzo);
+                    cmd.Parameters.AddWithValue("@id", servizio.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var query = "DELETE FROM Servizi WHERE id = @id";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }

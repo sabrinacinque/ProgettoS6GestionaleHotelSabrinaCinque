@@ -23,6 +23,7 @@ CREATE TABLE [dbo].[Users] (
     [role] VARCHAR(50) NOT NULL  
 );
 
+
 CREATE TABLE [dbo].[Prenotazioni] (
     [id] INT IDENTITY(1,1) PRIMARY KEY,
     [cliente_id] INT NOT NULL,
@@ -39,6 +40,7 @@ CREATE TABLE [dbo].[Prenotazioni] (
     FOREIGN KEY ([camera_id]) REFERENCES [dbo].[Camere]([id])
 );
 
+
 CREATE TABLE [dbo].[Servizi] (
     [id] INT IDENTITY(1,1) PRIMARY KEY,
     [descrizione] VARCHAR(100) NOT NULL,
@@ -49,12 +51,12 @@ CREATE TABLE [dbo].[Prenotazioni_Servizi] (
     [id] INT IDENTITY(1,1) PRIMARY KEY,
     [prenotazione_id] INT NOT NULL,
     [servizio_id] INT NOT NULL,
-    [data] DATE NOT NULL,
-    [quantità] INT NOT NULL,
-    [prezzo] DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY ([prenotazione_id]) REFERENCES [dbo].[Prenotazioni]([id]),
     FOREIGN KEY ([servizio_id]) REFERENCES [dbo].[Servizi]([id])
 );
+
+
+
 
 
 -- Inserimento dati nella tabella Clienti
@@ -77,23 +79,28 @@ VALUES
 ('manager', 'managerpass', 'manager');
 
 -- Inserimento dati nella tabella Prenotazioni
-INSERT INTO [dbo].[Prenotazioni] ([cliente_id], [camera_id], [data_prenotazione], [numero_progressivo], [anno], [dal], [al], [caparra], [tariffa], [tipologia_soggiorno])
+INSERT INTO [dbo].[Prenotazioni] 
+    ([cliente_id], [camera_id], [data_prenotazione], [numero_progressivo], [anno], [dal], [al], [caparra], [tariffa], [tipologia_soggiorno])
 VALUES 
-(1, 1, '2024-07-01', 1, 2024, '2024-07-10', '2024-07-20', 100.00, 500.00, 'mezza pensione'),
-(2, 2, '2024-07-05', 2, 2024, '2024-07-15', '2024-07-25', 200.00, 1000.00, 'pensione completa');
+    (1, 1, '2024-07-01', 1, 2024, '2024-07-10', '2024-07-20', 100.00, 500.00, 'mezza pensione'),
+    (2, 2, '2024-07-05', 2, 2024, '2024-07-15', '2024-07-25', 200.00, 1000.00, 'pensione completa');
+
 
 -- Inserimento dati nella tabella Servizi
 INSERT INTO [dbo].[Servizi] ([descrizione], [prezzo])
 VALUES 
 ('Colazione in camera', 15.00),
 ('Bevande e cibo nel mini bar', 10.00);
+('Internet', 5.00);
 
 -- Inserimento dati nella tabella Prenotazioni_Servizi
-INSERT INTO [dbo].[Prenotazioni_Servizi] ([prenotazione_id], [servizio_id], [data], [quantità], [prezzo])
+INSERT INTO [dbo].[Prenotazioni_Servizi] 
+    ([prenotazione_id], [servizio_id])
 VALUES 
-(1, 1, '2024-07-11', 1, 15.00),
-(2, 2, '2024-07-16', 2, 20.00);
-
+    (1, 1),
+    (1, 2),
+    (2, 2),
+    (2, 3);
 
 
 --query da salvare

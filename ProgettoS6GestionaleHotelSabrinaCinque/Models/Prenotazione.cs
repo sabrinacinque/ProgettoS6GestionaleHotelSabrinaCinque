@@ -13,5 +13,9 @@
         public decimal Caparra { get; set; }
         public decimal Tariffa { get; set; }
         public string TipologiaSoggiorno { get; set; }
+
+        public Cliente Cliente { get; set; }
+        public Camera Camera { get; set; }
+        //public List<Servizio> Servizi { get; set; } = new List<Servizio>();
     }
 }

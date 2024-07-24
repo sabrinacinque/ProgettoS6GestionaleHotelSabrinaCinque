@@ -1,0 +1,60 @@
+﻿@model ProgettoS6GestionaleHotelSabrinaCinque.Models.Prenotazione
+
+@{
+    ViewData["Title"] = "Dettagli Prenotazione";
+}
+
+<h2>Dettagli Prenotazione</h2>
+
+<div>
+    <h4>Prenotazione</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cliente.Cognome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cliente.Cognome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cliente.Nome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cliente.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Camera.Descrizione)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Camera.Descrizione)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DataPrenotazione)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DataPrenotazione)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Dal)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Dal)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Al)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Al)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipologiaSoggiorno)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipologiaSoggiorno)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifica</a> |
+    <a asp-action="Index" class="btn btn-primary">Indietro</a>
+</div>

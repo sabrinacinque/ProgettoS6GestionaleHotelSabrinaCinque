@@ -1,0 +1,30 @@
+﻿@model ProgettoS6GestionaleHotelSabrinaCinque.Models.Servizio
+
+@{
+    ViewData["Title"] = "Dettagli Servizio";
+}
+
+<h2>Dettagli Servizio</h2>
+
+<div>
+    <h4>Servizio</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Descrizione)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Descrizione)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Prezzo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Prezzo)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifica</a> |
+    <a asp-action="Index" class="btn btn-primary">Indietro</a>
+</div>
