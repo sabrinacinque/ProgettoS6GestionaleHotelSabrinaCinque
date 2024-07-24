@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ProgettoS6GestionaleHotelSabrinaCinque.Models;
+﻿using ProgettoS6GestionaleHotelSabrinaCinque.Models;
+using System.Collections.Generic;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
 {
@@ -7,11 +7,8 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
     {
         IEnumerable<Prenotazione> GetAll();
         Prenotazione GetById(int id);
-
         void Add(Prenotazione prenotazione);
         void Update(Prenotazione prenotazione);
-        //void Add(Prenotazione prenotazione, List<int> serviziIds);
-        //void Update(Prenotazione prenotazione, List<int> serviziIds);
         void Delete(int id);
     }
 }

@@ -32,7 +32,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                             CodiceFiscale = reader.GetString(reader.GetOrdinal("codice_fiscale")),
                             Cognome = reader.GetString(reader.GetOrdinal("cognome")),
                             Nome = reader.GetString(reader.GetOrdinal("nome")),
-                            Città = reader.GetString(reader.GetOrdinal("città")),
+                            Citta = reader.GetString(reader.GetOrdinal("città")),
                             Provincia = reader.GetString(reader.GetOrdinal("provincia")),
                             Email = reader.GetString(reader.GetOrdinal("email")),
                             Cellulare = reader.GetString(reader.GetOrdinal("cellulare"))
@@ -67,7 +67,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                                 CodiceFiscale = reader.GetString(reader.GetOrdinal("codice_fiscale")),
                                 Cognome = reader.GetString(reader.GetOrdinal("cognome")),
                                 Nome = reader.GetString(reader.GetOrdinal("nome")),
-                                Città = reader.GetString(reader.GetOrdinal("città")),
+                                Citta = reader.GetString(reader.GetOrdinal("città")),
                                 Provincia = reader.GetString(reader.GetOrdinal("provincia")),
                                 Email = reader.GetString(reader.GetOrdinal("email")),
                                 Cellulare = reader.GetString(reader.GetOrdinal("cellulare"))
@@ -93,7 +93,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                     cmd.Parameters.AddWithValue("@codice_fiscale", cliente.CodiceFiscale);
                     cmd.Parameters.AddWithValue("@cognome", cliente.Cognome);
                     cmd.Parameters.AddWithValue("@nome", cliente.Nome);
-                    cmd.Parameters.AddWithValue("@città", cliente.Città);
+                    cmd.Parameters.AddWithValue("@città", cliente.Citta);
                     cmd.Parameters.AddWithValue("@provincia", cliente.Provincia);
                     cmd.Parameters.AddWithValue("@email", cliente.Email);
                     cmd.Parameters.AddWithValue("@cellulare", cliente.Cellulare);
@@ -122,7 +122,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                     cmd.Parameters.AddWithValue("@codice_fiscale", cliente.CodiceFiscale);
                     cmd.Parameters.AddWithValue("@cognome", cliente.Cognome);
                     cmd.Parameters.AddWithValue("@nome", cliente.Nome);
-                    cmd.Parameters.AddWithValue("@città", cliente.Città);
+                    cmd.Parameters.AddWithValue("@città", cliente.Citta);
                     cmd.Parameters.AddWithValue("@provincia", cliente.Provincia);
                     cmd.Parameters.AddWithValue("@email", cliente.Email);
                     cmd.Parameters.AddWithValue("@cellulare", cliente.Cellulare);

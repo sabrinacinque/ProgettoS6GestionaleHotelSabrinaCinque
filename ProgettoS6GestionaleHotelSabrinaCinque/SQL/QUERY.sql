@@ -90,7 +90,7 @@ VALUES
 INSERT INTO [dbo].[Servizi] ([descrizione], [prezzo])
 VALUES 
 ('Colazione in camera', 15.00),
-('Bevande e cibo nel mini bar', 10.00);
+('Bevande e cibo nel mini bar', 10.00),
 ('Internet', 5.00);
 
 -- Inserimento dati nella tabella Prenotazioni_Servizi

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Modifica Prenotazione";
 }
 
-<h2>Modifica Prenotazione</h2>
+<h1>Modifica Prenotazione</h1>
 
 <h4>Prenotazione</h4>
 <hr />
@@ -12,16 +12,6 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ClienteId" class="control-label">Cliente</label>
-                <select asp-for="ClienteId" class="form-control" asp-items="@(new SelectList(ViewBag.Clienti, "Id", "Cognome"))"></select>
-                <span asp-validation-for="ClienteId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CameraId" class="control-label">Camera</label>
-                <select asp-for="CameraId" class="form-control" asp-items="@(new SelectList(ViewBag.Camere, "Id", "Descrizione"))"></select>
-                <span asp-validation-for="CameraId" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="DataPrenotazione" class="control-label"></label>
                 <input asp-for="DataPrenotazione" class="form-control" />
@@ -63,12 +53,18 @@
                 <span asp-validation-for="TipologiaSoggiorno" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ClienteId" class="control-label"></label>
+                <input asp-for="ClienteId" class="form-control" />
+                <span asp-validation-for="ClienteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CameraId" class="control-label"></label>
+                <input asp-for="CameraId" class="form-control" />
+                <span asp-validation-for="CameraId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Salva" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" class="btn btn-primary">Indietro</a>
 </div>

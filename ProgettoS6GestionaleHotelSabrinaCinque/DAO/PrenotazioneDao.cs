@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ProgettoS6GestionaleHotelSabrinaCinque.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using ProgettoS6GestionaleHotelSabrinaCinque.Models;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
 {
@@ -18,43 +18,47 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
         {
             var prenotazioni = new List<Prenotazione>();
 
-            using (var conn = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
-                conn.Open();
+                connection.Open();
                 var query = @"
-                    SELECT p.*, c.cognome, c.nome, cam.descrizione 
+                    SELECT p.*, c.id AS cliente_id, c.cognome, c.nome, cam.id AS camera_id, cam.descrizione 
                     FROM Prenotazioni p
                     JOIN Clienti c ON p.cliente_id = c.id
                     JOIN Camere cam ON p.camera_id = cam.id";
-                using (var cmd = new SqlCommand(query, conn))
-                using (var reader = cmd.ExecuteReader())
+                using (var command = new SqlCommand(query, connection))
                 {
-                    while (reader.Read())
+                    using (var reader = command.ExecuteReader())
                     {
-                        var prenotazione = new Prenotazione
+                        while (reader.Read())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("id")),
-                            ClienteId = reader.GetInt32(reader.GetOrdinal("cliente_id")),
-                            CameraId = reader.GetInt32(reader.GetOrdinal("camera_id")),
-                            DataPrenotazione = reader.GetDateTime(reader.GetOrdinal("data_prenotazione")),
-                            NumeroProgressivo = reader.GetInt32(reader.GetOrdinal("numero_progressivo")),
-                            Anno = reader.GetInt32(reader.GetOrdinal("anno")),
-                            Dal = reader.GetDateTime(reader.GetOrdinal("dal")),
-                            Al = reader.GetDateTime(reader.GetOrdinal("al")),
-                            Caparra = reader.GetDecimal(reader.GetOrdinal("caparra")),
-                            Tariffa = reader.GetDecimal(reader.GetOrdinal("tariffa")),
-                            TipologiaSoggiorno = reader.GetString(reader.GetOrdinal("tipologia_soggiorno")),
-                            Cliente = new Cliente
+                            var prenotazione = new Prenotazione
                             {
-                                Cognome = reader.GetString(reader.GetOrdinal("cognome")),
-                                Nome = reader.GetString(reader.GetOrdinal("nome"))
-                            },
-                            Camera = new Camera
-                            {
-                                Descrizione = reader.GetString(reader.GetOrdinal("descrizione"))
-                            }
-                        };
-                        prenotazioni.Add(prenotazione);
+                                Id = (int)reader["id"],
+                                DataPrenotazione = (DateTime)reader["data_prenotazione"],
+                                NumeroProgressivo = (int)reader["numero_progressivo"],
+                                Anno = (int)reader["anno"],
+                                Dal = (DateTime)reader["dal"],
+                                Al = (DateTime)reader["al"],
+                                Caparra = (decimal)reader["caparra"],
+                                Tariffa = (decimal)reader["tariffa"],
+                                TipologiaSoggiorno = (string)reader["tipologia_soggiorno"],
+                                ClienteId = (int)reader["cliente_id"],
+                                CameraId = (int)reader["camera_id"],
+                                Cliente = new Cliente
+                                {
+                                    Id = (int)reader["cliente_id"],
+                                    Cognome = (string)reader["cognome"],
+                                    Nome = (string)reader["nome"]
+                                },
+                                Camera = new Camera
+                                {
+                                    Id = (int)reader["camera_id"],
+                                    Descrizione = (string)reader["descrizione"]
+                                }
+                            };
+                            prenotazioni.Add(prenotazione);
+                        }
                     }
                 }
             }
@@ -66,43 +70,45 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
         {
             Prenotazione prenotazione = null;
 
-            using (var conn = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
-                conn.Open();
+                connection.Open();
                 var query = @"
-                    SELECT p.*, c.cognome, c.nome, cam.descrizione 
+                    SELECT p.*, c.id AS cliente_id, c.cognome, c.nome, cam.id AS camera_id, cam.descrizione 
                     FROM Prenotazioni p
                     JOIN Clienti c ON p.cliente_id = c.id
                     JOIN Camere cam ON p.camera_id = cam.id
                     WHERE p.id = @id";
-                using (var cmd = new SqlCommand(query, conn))
+                using (var command = new SqlCommand(query, connection))
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    using (var reader = cmd.ExecuteReader())
+                    command.Parameters.AddWithValue("@id", id);
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             prenotazione = new Prenotazione
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("id")),
-                                ClienteId = reader.GetInt32(reader.GetOrdinal("cliente_id")),
-                                CameraId = reader.GetInt32(reader.GetOrdinal("camera_id")),
-                                DataPrenotazione = reader.GetDateTime(reader.GetOrdinal("data_prenotazione")),
-                                NumeroProgressivo = reader.GetInt32(reader.GetOrdinal("numero_progressivo")),
-                                Anno = reader.GetInt32(reader.GetOrdinal("anno")),
-                                Dal = reader.GetDateTime(reader.GetOrdinal("dal")),
-                                Al = reader.GetDateTime(reader.GetOrdinal("al")),
-                                Caparra = reader.GetDecimal(reader.GetOrdinal("caparra")),
-                                Tariffa = reader.GetDecimal(reader.GetOrdinal("tariffa")),
-                                TipologiaSoggiorno = reader.GetString(reader.GetOrdinal("tipologia_soggiorno")),
+                                Id = (int)reader["id"],
+                                DataPrenotazione = (DateTime)reader["data_prenotazione"],
+                                NumeroProgressivo = (int)reader["numero_progressivo"],
+                                Anno = (int)reader["anno"],
+                                Dal = (DateTime)reader["dal"],
+                                Al = (DateTime)reader["al"],
+                                Caparra = (decimal)reader["caparra"],
+                                Tariffa = (decimal)reader["tariffa"],
+                                TipologiaSoggiorno = (string)reader["tipologia_soggiorno"],
+                                ClienteId = (int)reader["cliente_id"],
+                                CameraId = (int)reader["camera_id"],
                                 Cliente = new Cliente
                                 {
-                                    Cognome = reader.GetString(reader.GetOrdinal("cognome")),
-                                    Nome = reader.GetString(reader.GetOrdinal("nome"))
+                                    Id = (int)reader["cliente_id"],
+                                    Cognome = (string)reader["cognome"],
+                                    Nome = (string)reader["nome"]
                                 },
                                 Camera = new Camera
                                 {
-                                    Descrizione = reader.GetString(reader.GetOrdinal("descrizione"))
+                                    Id = (int)reader["camera_id"],
+                                    Descrizione = (string)reader["descrizione"]
                                 }
                             };
                         }
@@ -115,76 +121,78 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
 
         public void Add(Prenotazione prenotazione)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
-                conn.Open();
+                connection.Open();
                 var query = @"
-                    INSERT INTO Prenotazioni (cliente_id, camera_id, data_prenotazione, numero_progressivo, anno, dal, al, caparra, tariffa, tipologia_soggiorno)
-                    VALUES (@cliente_id, @camera_id, @data_prenotazione, @numero_progressivo, @anno, @dal, @al, @caparra, @tariffa, @tipologia_soggiorno);
-                    SELECT SCOPE_IDENTITY();";
-                using (var cmd = new SqlCommand(query, conn))
+                    INSERT INTO Prenotazioni (data_prenotazione, numero_progressivo, anno, dal, al, caparra, tariffa, tipologia_soggiorno, cliente_id, camera_id)
+                    VALUES (@data_prenotazione, @numero_progressivo, @anno, @dal, @al, @caparra, @tariffa, @tipologia_soggiorno, @cliente_id, @camera_id)";
+                using (var command = new SqlCommand(query, connection))
                 {
-                    cmd.Parameters.AddWithValue("@cliente_id", prenotazione.ClienteId);
-                    cmd.Parameters.AddWithValue("@camera_id", prenotazione.CameraId);
-                    cmd.Parameters.AddWithValue("@data_prenotazione", prenotazione.DataPrenotazione);
-                    cmd.Parameters.AddWithValue("@numero_progressivo", prenotazione.NumeroProgressivo);
-                    cmd.Parameters.AddWithValue("@anno", prenotazione.Anno);
-                    cmd.Parameters.AddWithValue("@dal", prenotazione.Dal);
-                    cmd.Parameters.AddWithValue("@al", prenotazione.Al);
-                    cmd.Parameters.AddWithValue("@caparra", prenotazione.Caparra);
-                    cmd.Parameters.AddWithValue("@tariffa", prenotazione.Tariffa);
-                    cmd.Parameters.AddWithValue("@tipologia_soggiorno", prenotazione.TipologiaSoggiorno);
-                    prenotazione.Id = Convert.ToInt32(cmd.ExecuteScalar());
+                    command.Parameters.AddWithValue("@data_prenotazione", prenotazione.DataPrenotazione);
+                    command.Parameters.AddWithValue("@numero_progressivo", prenotazione.NumeroProgressivo);
+                    command.Parameters.AddWithValue("@anno", prenotazione.Anno);
+                    command.Parameters.AddWithValue("@dal", prenotazione.Dal);
+                    command.Parameters.AddWithValue("@al", prenotazione.Al);
+                    command.Parameters.AddWithValue("@caparra", prenotazione.Caparra);
+                    command.Parameters.AddWithValue("@tariffa", prenotazione.Tariffa);
+                    command.Parameters.AddWithValue("@tipologia_soggiorno", prenotazione.TipologiaSoggiorno);
+                    command.Parameters.AddWithValue("@cliente_id", prenotazione.ClienteId);
+                    command.Parameters.AddWithValue("@camera_id", prenotazione.CameraId);
+                    command.ExecuteNonQuery();
                 }
             }
         }
 
         public void Update(Prenotazione prenotazione)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
-                conn.Open();
+                connection.Open();
                 var query = @"
-                    UPDATE Prenotazioni SET 
-                    cliente_id = @cliente_id, 
-                    camera_id = @camera_id, 
-                    data_prenotazione = @data_prenotazione, 
-                    numero_progressivo = @numero_progressivo, 
-                    anno = @anno, 
-                    dal = @dal, 
-                    al = @al, 
-                    caparra = @caparra, 
-                    tariffa = @tariffa, 
-                    tipologia_soggiorno = @tipologia_soggiorno
-                    WHERE id = @id";
-                using (var cmd = new SqlCommand(query, conn))
+            UPDATE Prenotazioni
+            SET data_prenotazione = @data_prenotazione,
+                numero_progressivo = @numero_progressivo,
+                anno = @anno,
+                dal = @dal,
+                al = @al,
+                caparra = @caparra,
+                tariffa = @tariffa,
+                tipologia_soggiorno = @tipologia_soggiorno,
+                cliente_id = @cliente_id,
+                camera_id = @camera_id
+            WHERE id = @id";
+                using (var command = new SqlCommand(query, connection))
                 {
-                    cmd.Parameters.AddWithValue("@cliente_id", prenotazione.ClienteId);
-                    cmd.Parameters.AddWithValue("@camera_id", prenotazione.CameraId);
-                    cmd.Parameters.AddWithValue("@data_prenotazione", prenotazione.DataPrenotazione);
-                    cmd.Parameters.AddWithValue("@numero_progressivo", prenotazione.NumeroProgressivo);
-                    cmd.Parameters.AddWithValue("@anno", prenotazione.Anno);
-                    cmd.Parameters.AddWithValue("@dal", prenotazione.Dal);
-                    cmd.Parameters.AddWithValue("@al", prenotazione.Al);
-                    cmd.Parameters.AddWithValue("@caparra", prenotazione.Caparra);
-                    cmd.Parameters.AddWithValue("@tariffa", prenotazione.Tariffa);
-                    cmd.Parameters.AddWithValue("@tipologia_soggiorno", prenotazione.TipologiaSoggiorno);
-                    cmd.Parameters.AddWithValue("@id", prenotazione.Id);
-                    cmd.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@id", prenotazione.Id);
+                    command.Parameters.AddWithValue("@data_prenotazione", prenotazione.DataPrenotazione);
+                    command.Parameters.AddWithValue("@numero_progressivo", prenotazione.NumeroProgressivo);
+                    command.Parameters.AddWithValue("@anno", prenotazione.Anno);
+                    command.Parameters.AddWithValue("@dal", prenotazione.Dal);
+                    command.Parameters.AddWithValue("@al", prenotazione.Al);
+                    command.Parameters.AddWithValue("@caparra", prenotazione.Caparra);
+                    command.Parameters.AddWithValue("@tariffa", prenotazione.Tariffa);
+                    command.Parameters.AddWithValue("@tipologia_soggiorno", prenotazione.TipologiaSoggiorno);
+                    command.Parameters.AddWithValue("@cliente_id", prenotazione.ClienteId);
+                    command.Parameters.AddWithValue("@camera_id", prenotazione.CameraId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    Console.WriteLine($"Numero di righe aggiornate: {rowsAffected}");
                 }
             }
         }
 
+
         public void Delete(int id)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_connectionString))
             {
-                conn.Open();
-                var deleteQuery = "DELETE FROM Prenotazioni WHERE id = @id";
-                using (var cmd = new SqlCommand(deleteQuery, conn))
+                connection.Open();
+                var query = "DELETE FROM Prenotazioni WHERE id = @id";
+                using (var command = new SqlCommand(query, connection))
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
                 }
             }
         }
