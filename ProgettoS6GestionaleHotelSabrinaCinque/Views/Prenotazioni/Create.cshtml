@@ -58,7 +58,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="TipologiaSoggiorno" class="control-label"></label>
-                <input asp-for="TipologiaSoggiorno" class="form-control" />
+                <select asp-for="TipologiaSoggiorno" class="form-control">
+                    <option value="mezza pensione">Mezza Pensione</option>
+                    <option value="pensione completa">Pensione Completa</option>
+                    <option value="pernottamento con prima colazione">Pernottamento con Prima Colazione</option>
+                </select>
                 <span asp-validation-for="TipologiaSoggiorno" class="text-danger"></span>
             </div>
             <div class="form-group">

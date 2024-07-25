@@ -146,22 +146,39 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 
             var giorniSoggiorno = (prenotazione.Al - prenotazione.Dal).Days;
             var totaleStanza = prenotazione.Tariffa * giorniSoggiorno;
+            decimal extraSoggiorno = 0;
+
+            // Calcola l'extra in base alla tipologia soggiorno
+            switch (prenotazione.TipologiaSoggiorno.ToLower())
+            {
+                case "mezza pensione":
+                    extraSoggiorno = 20 * giorniSoggiorno;
+                    break;
+                case "pensione completa":
+                    extraSoggiorno = 30 * giorniSoggiorno;
+                    break;
+                case "pernottamento con prima colazione":
+                    extraSoggiorno = 5 * giorniSoggiorno;
+                    break;
+            }
+
             var totaleServizi = prenotazione.Servizi.Sum(s => s.Prezzo);
-            var totale = totaleStanza + totaleServizi - prenotazione.Caparra;
+            var totale = totaleStanza + totaleServizi + extraSoggiorno - prenotazione.Caparra;
 
             var viewModel = new CheckoutViewModel
             {
                 Prenotazione = prenotazione,
                 TotaleStanza = totaleStanza,
                 TotaleServizi = totaleServizi,
+                ExtraSoggiorno = extraSoggiorno,
                 Totale = totale
             };
 
             return View("Checkout", viewModel);
         }
 
-
-        public IActionResult DownloadPdf(int id) //ho installato un pacchetto Install-Package iTextSharp.LGPLv2.Core per creare il pdf quando si va su checkout
+        //ho installato un pacchetto Install-Package iTextSharp.LGPLv2.Core per creare il pdf quando si va su checkout
+        public IActionResult DownloadPdf(int id)
         {
             var prenotazione = _prenotazioneDao.GetById(id);
             if (prenotazione == null)
@@ -171,12 +188,34 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 
             prenotazione.Servizi = _servizioDao.GetByPrenotazioneId(id).ToList();
 
+            var giorniSoggiorno = (prenotazione.Al - prenotazione.Dal).Days;
+            var totaleStanza = prenotazione.Tariffa * giorniSoggiorno;
+            decimal extraSoggiorno = 0;
+
+            // Calcola l'extra in base alla tipologia soggiorno
+            switch (prenotazione.TipologiaSoggiorno.ToLower())
+            {
+                case "mezza pensione":
+                    extraSoggiorno = 20 * giorniSoggiorno;
+                    break;
+                case "pensione completa":
+                    extraSoggiorno = 30 * giorniSoggiorno;
+                    break;
+                case "pernottamento con prima colazione":
+                    extraSoggiorno = 5 * giorniSoggiorno;
+                    break;
+            }
+
+            var totaleServizi = prenotazione.Servizi.Sum(s => s.Prezzo);
+            var totale = totaleStanza + totaleServizi + extraSoggiorno - prenotazione.Caparra;
+
             var checkoutViewModel = new CheckoutViewModel
             {
                 Prenotazione = prenotazione,
-                TotaleStanza = (prenotazione.Al - prenotazione.Dal).Days * prenotazione.Tariffa,
-                TotaleServizi = prenotazione.Servizi.Sum(s => s.Prezzo),
-                Totale = ((prenotazione.Al - prenotazione.Dal).Days * prenotazione.Tariffa) + prenotazione.Servizi.Sum(s => s.Prezzo) - prenotazione.Caparra
+                TotaleStanza = totaleStanza,
+                TotaleServizi = totaleServizi,
+                ExtraSoggiorno = extraSoggiorno,
+                Totale = totale
             };
 
             using (var ms = new MemoryStream())
@@ -192,6 +231,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
                 document.Add(new Paragraph($"Al: {checkoutViewModel.Prenotazione.Al.ToShortDateString()}"));
                 document.Add(new Paragraph($"Tariffa giornaliera: {checkoutViewModel.Prenotazione.Tariffa.ToString("C")}"));
                 document.Add(new Paragraph($"Caparra: {checkoutViewModel.Prenotazione.Caparra.ToString("C")}"));
+                document.Add(new Paragraph($"Tipologia Soggiorno: {checkoutViewModel.Prenotazione.TipologiaSoggiorno}"));
 
                 document.Add(new Paragraph("Servizi Aggiuntivi:"));
                 foreach (var servizio in checkoutViewModel.Prenotazione.Servizi)
@@ -201,6 +241,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 
                 document.Add(new Paragraph($"Totale Stanza: {checkoutViewModel.TotaleStanza.ToString("C")}"));
                 document.Add(new Paragraph($"Totale Servizi Aggiuntivi: {checkoutViewModel.TotaleServizi.ToString("C")}"));
+                document.Add(new Paragraph($"Extra Soggiorno ({checkoutViewModel.Prenotazione.TipologiaSoggiorno}): {checkoutViewModel.ExtraSoggiorno.ToString("C")}"));
                 document.Add(new Paragraph($"Caparra Iniziale: {checkoutViewModel.Prenotazione.Caparra.ToString("C")}"));
                 document.Add(new Paragraph($"Totale Da Saldare: {checkoutViewModel.Totale.ToString("C")}"));
 
@@ -209,6 +250,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
                 return File(ms.ToArray(), "application/pdf", "Riepilogo_Checkout.pdf");
             }
         }
+
 
 
     }

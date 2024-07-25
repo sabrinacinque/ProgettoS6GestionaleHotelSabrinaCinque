@@ -7,5 +7,6 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Models
         public decimal TotaleStanza { get; set; }
         public decimal TotaleServizi { get; set; }
         public decimal Totale { get; set; }
+        public decimal ExtraSoggiorno { get; set; }
     }
 }
