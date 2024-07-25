@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 {
-    [Authorize(Policy = "GeneralAccessPolicy")]
+    [Authorize(Policy = "AdminPolicy")]//solo l'admin ha accesso al database dei servizi e fare le crud
     public class ServiziController : Controller
     {
         private readonly IServizioDao _servizioDao;

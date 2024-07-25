@@ -72,6 +72,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             return View(prenotazione);
         }
 
+
         public IActionResult Edit(int id)
         {
             var prenotazione = _prenotazioneDao.GetById(id);

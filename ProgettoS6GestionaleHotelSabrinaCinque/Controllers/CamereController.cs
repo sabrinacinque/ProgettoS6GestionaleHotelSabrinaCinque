@@ -5,7 +5,7 @@ using ProgettoS6GestionaleHotelSabrinaCinque.Models;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 {
-    [Authorize(Policy = "GeneralAccessPolicy")]
+    [Authorize(Policy = "AdminPolicy")]//solo l'admin ha accesso al database delle camere e fare le crud
     public class CamereController : Controller
     {
         private readonly ICameraDao _cameraDao;
@@ -31,6 +31,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             return View(camera);
         }
 
+       
         public IActionResult Create()
         {
             return View();
