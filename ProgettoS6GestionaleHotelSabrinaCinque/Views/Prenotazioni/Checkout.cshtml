@@ -1,0 +1,32 @@
+﻿@model ProgettoS6GestionaleHotelSabrinaCinque.Models.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Check-out";
+}
+
+<h2>Riepilogo Check-out</h2>
+
+<p>Cliente: @Model.Prenotazione.Cliente.Cognome @Model.Prenotazione.Cliente.Nome</p>
+<p>Camera: @Model.Prenotazione.Camera.Descrizione</p>
+<p>Dal: @Model.Prenotazione.Dal.ToShortDateString()</p>
+<p>Al: @Model.Prenotazione.Al.ToShortDateString()</p>
+<p>Tariffa giornaliera: @Model.Prenotazione.Tariffa.ToString("C")</p>
+<p>Caparra: @Model.Prenotazione.Caparra.ToString("C")</p>
+<h5>Servizi Aggiuntivi:</h5>
+<ul>
+    @foreach (var servizio in Model.Prenotazione.Servizi)
+    {
+        <li>@servizio.Descrizione - @servizio.Prezzo.ToString("C")</li>
+    }
+</ul>
+
+<h2 class="mt-5 mb-3">Riepilogo Totale:</h2>
+<h4>Totale Stanza : <span> @Model.TotaleStanza.ToString("C")</span></h4>
+<h4>+ Totale Servizi Aggiuntivi:<span> @Model.TotaleServizi.ToString("C")</span></h4>
+<h4>- Caparra Iniziale: <span> @Model.Prenotazione.Caparra.ToString("C")</span></h4>
+<h1>-----------------------------------------</h1>
+<h3>Totale Da Saldare: @Model.Totale.ToString("C")</h3>
+
+<p>
+    <a asp-action="Index" class="btn btn-primary">Indietro</a>
+</p>

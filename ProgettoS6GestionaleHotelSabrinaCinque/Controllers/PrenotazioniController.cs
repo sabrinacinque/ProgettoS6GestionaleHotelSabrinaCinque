@@ -128,5 +128,36 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             }
             return Json(camera.Prezzo);
         }
+
+        [HttpGet]
+        public IActionResult Checkout(int id)
+        {
+            var prenotazione = _prenotazioneDao.GetById(id);
+            if (prenotazione == null)
+            {
+                return NotFound();
+            }
+
+            prenotazione.Servizi = _servizioDao.GetByPrenotazioneId(id).ToList();
+
+            var giorniSoggiorno = (prenotazione.Al - prenotazione.Dal).Days;
+            var totaleStanza = prenotazione.Tariffa * giorniSoggiorno;
+            var totaleServizi = prenotazione.Servizi.Sum(s => s.Prezzo);
+            var totale = totaleStanza + totaleServizi - prenotazione.Caparra;
+
+            var viewModel = new CheckoutViewModel
+            {
+                Prenotazione = prenotazione,
+                TotaleStanza = totaleStanza,
+                TotaleServizi = totaleServizi,
+                Totale = totale
+            };
+
+            return View("Checkout", viewModel);
+        }
+
+
     }
+
 }
+

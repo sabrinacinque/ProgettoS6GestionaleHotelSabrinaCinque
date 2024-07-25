@@ -14,25 +14,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().Cliente.Cognome)
+                @Html.DisplayNameFor(model => model.Cliente.Cognome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Cliente.Nome)
+                @Html.DisplayNameFor(model => model.Cliente.Nome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Camera.Descrizione)
+                @Html.DisplayNameFor(model => model.Camera.Descrizione)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().DataPrenotazione)
+                @Html.DisplayNameFor(model => model.DataPrenotazione)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Dal)
+                @Html.DisplayNameFor(model => model.Dal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Al)
+                @Html.DisplayNameFor(model => model.Al)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().TipologiaSoggiorno)
+                @Html.DisplayNameFor(model => model.TipologiaSoggiorno)
             </th>
             <th></th>
         </tr>
@@ -65,7 +65,8 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Modifica</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Dettagli</a> |
-                    <button type="button" class="btn btn-danger" onclick="confirmDelete(@item.Id)">Elimina</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete(@item.Id)">Elimina</button> |
+                    <a asp-action="Checkout" asp-route-id="@item.Id" class="btn btn-success">Check-out</a>
                 </td>
             </tr>
         }
