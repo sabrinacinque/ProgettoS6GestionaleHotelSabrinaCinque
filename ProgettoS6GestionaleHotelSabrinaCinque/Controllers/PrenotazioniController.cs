@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using ProgettoS6GestionaleHotelSabrinaCinque.DAO;
 using ProgettoS6GestionaleHotelSabrinaCinque.Models;
 using System.Diagnostics;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 {
@@ -154,6 +157,56 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             };
 
             return View("Checkout", viewModel);
+        }
+
+
+        public IActionResult DownloadPdf(int id) //ho installato un pacchetto Install-Package iTextSharp.LGPLv2.Core per creare il pdf quando si va su checkout
+        {
+            var prenotazione = _prenotazioneDao.GetById(id);
+            if (prenotazione == null)
+            {
+                return NotFound();
+            }
+
+            prenotazione.Servizi = _servizioDao.GetByPrenotazioneId(id).ToList();
+
+            var checkoutViewModel = new CheckoutViewModel
+            {
+                Prenotazione = prenotazione,
+                TotaleStanza = (prenotazione.Al - prenotazione.Dal).Days * prenotazione.Tariffa,
+                TotaleServizi = prenotazione.Servizi.Sum(s => s.Prezzo),
+                Totale = ((prenotazione.Al - prenotazione.Dal).Days * prenotazione.Tariffa) + prenotazione.Servizi.Sum(s => s.Prezzo) - prenotazione.Caparra
+            };
+
+            using (var ms = new MemoryStream())
+            {
+                var document = new Document();
+                PdfWriter.GetInstance(document, ms);
+                document.Open();
+
+                document.Add(new Paragraph("Riepilogo Check-out"));
+                document.Add(new Paragraph($"Cliente: {checkoutViewModel.Prenotazione.Cliente.Cognome} {checkoutViewModel.Prenotazione.Cliente.Nome}"));
+                document.Add(new Paragraph($"Camera: {checkoutViewModel.Prenotazione.Camera.Descrizione}"));
+                document.Add(new Paragraph($"Dal: {checkoutViewModel.Prenotazione.Dal.ToShortDateString()}"));
+                document.Add(new Paragraph($"Al: {checkoutViewModel.Prenotazione.Al.ToShortDateString()}"));
+                document.Add(new Paragraph($"Tariffa giornaliera: {checkoutViewModel.Prenotazione.Tariffa.ToString("C")}"));
+                document.Add(new Paragraph($"Caparra: {checkoutViewModel.Prenotazione.Caparra.ToString("C")}"));
+
+                document.Add(new Paragraph("Servizi Aggiuntivi:"));
+                foreach (var servizio in checkoutViewModel.Prenotazione.Servizi)
+                {
+                    document.Add(new Paragraph($"{servizio.Descrizione} - {servizio.Prezzo.ToString("C")}"));
+                }
+
+                document.Add(new Paragraph($"Totale Stanza: {checkoutViewModel.TotaleStanza.ToString("C")}"));
+                document.Add(new Paragraph($"Totale Servizi Aggiuntivi: {checkoutViewModel.TotaleServizi.ToString("C")}"));
+                document.Add(new Paragraph($"Caparra Iniziale: {checkoutViewModel.Prenotazione.Caparra.ToString("C")}"));
+                document.Add(new Paragraph($"Totale Da Saldare: {checkoutViewModel.Totale.ToString("C")}"));
+
+                document.Close();
+
+                return File(ms.ToArray(), "application/pdf", "Riepilogo_Checkout.pdf");
+            }
         }
 
 
