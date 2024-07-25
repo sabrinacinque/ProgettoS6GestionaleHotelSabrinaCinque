@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Ricerca Prenotazioni";
+}
+
+<h2>Ricerca Prenotazioni</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Ricerca per Codice Fiscale Cliente</h3>
+        <form id="ricercaPrenotazioniClienteForm">
+            <div class="form-group">
+                <label for="codiceFiscale">Codice Fiscale:</label>
+                <input type="text" class="form-control" id="codiceFiscale" name="codiceFiscale" required />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="ricercaPrenotazioni()">Cerca</button>
+        </form>
+        <div id="risultatiPrenotazioniCliente"></div>
+    </div>
+    <div class="col-md-6">
+        <h3>Ricerca Numero Prenotazioni per Soggiorni di Tipo “Pensione Completa”</h3>
+        <button type="button" class="btn btn-primary" onclick="ricercaTotalePrenotazioni()">Cerca</button>
+        <div id="risultatiNumeroPrenotazioni"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function ricercaPrenotazioni() {
+            $.ajax({
+                url: '@Url.Action("RicercaPrenotazioniCliente", "Ricerca")',
+                type: 'POST',
+                data: { codiceFiscale: $('#codiceFiscale').val() },
+                success: function (data) {
+                    $('#risultatiPrenotazioniCliente').html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert("Errore durante la ricerca delle prenotazioni.");
+                }
+            });
+        }
+
+        function ricercaTotalePrenotazioni() {
+            $.ajax({
+                url: '@Url.Action("RicercaNumeroPrenotazioniPensioneCompleta", "Ricerca")',
+                type: 'POST',
+                success: function (data) {
+                    $('#risultatiNumeroPrenotazioni').html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert("Errore durante la ricerca del numero di prenotazioni.");
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<ProgettoS6GestionaleHotelSabrinaCinque.Models.Prenotazione>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Camera</th>
+            <th>Data Prenotazione</th>
+            <th>Dal</th>
+            <th>Al</th>
+            <th>Tipologia Soggiorno</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var prenotazione in Model)
+        {
+            <tr>
+                <td>@prenotazione.Cliente.Cognome @prenotazione.Cliente.Nome</td>
+                <td>@prenotazione.Camera.Descrizione</td>
+                <td>@prenotazione.DataPrenotazione.ToShortDateString()</td>
+                <td>@prenotazione.Dal.ToShortDateString()</td>
+                <td>@prenotazione.Al.ToShortDateString()</td>
+                <td>@prenotazione.TipologiaSoggiorno</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -252,5 +252,76 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             }
         }
 
+        public IEnumerable<Prenotazione> GetPrenotazioniByCodiceFiscale(string codiceFiscale)
+        {
+            var prenotazioni = new List<Prenotazione>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var query = @"
+                    SELECT p.*, c.cognome, c.nome, cam.descrizione 
+                    FROM Prenotazioni p
+                    JOIN Clienti c ON p.cliente_id = c.id
+                    JOIN Camere cam ON p.camera_id = cam.id
+                    WHERE c.codice_fiscale = @codiceFiscale";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@codiceFiscale", codiceFiscale);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var prenotazione = new Prenotazione
+                            {
+                                Id = (int)reader["id"],
+                                DataPrenotazione = (DateTime)reader["data_prenotazione"],
+                                NumeroProgressivo = (int)reader["numero_progressivo"],
+                                Anno = (int)reader["anno"],
+                                Dal = (DateTime)reader["dal"],
+                                Al = (DateTime)reader["al"],
+                                Caparra = (decimal)reader["caparra"],
+                                Tariffa = (decimal)reader["tariffa"],
+                                TipologiaSoggiorno = (string)reader["tipologia_soggiorno"],
+                                ClienteId = (int)reader["cliente_id"],
+                                CameraId = (int)reader["camera_id"],
+                                Cliente = new Cliente
+                                {
+                                    Id = (int)reader["cliente_id"],
+                                    Cognome = (string)reader["cognome"],
+                                    Nome = (string)reader["nome"]
+                                },
+                                Camera = new Camera
+                                {
+                                    Id = (int)reader["camera_id"],
+                                    Descrizione = (string)reader["descrizione"]
+                                }
+                            };
+                            prenotazioni.Add(prenotazione);
+                        }
+                    }
+                }
+            }
+
+            return prenotazioni;
+        }
+
+        public int GetTotalePrenotazioniPerTipologia(string tipologiaSoggiorno)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var query = @"
+                    SELECT COUNT(*)
+                    FROM Prenotazioni
+                    WHERE tipologia_soggiorno = @tipologiaSoggiorno";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@tipologiaSoggiorno", tipologiaSoggiorno);
+                    return (int)command.ExecuteScalar();
+                }
+            }
+        }
+
     }
 }

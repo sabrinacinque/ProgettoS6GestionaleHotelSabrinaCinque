@@ -12,5 +12,8 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
         void Delete(int id);
         int GetLastId();
         void UpdateServizi(int prenotazioneId, List<int> serviziSelezionati);
+
+        IEnumerable<Prenotazione> GetPrenotazioniByCodiceFiscale(string codiceFiscale);
+        int GetTotalePrenotazioniPerTipologia(string tipologiaSoggiorno);
     }
 }
