@@ -43,7 +43,17 @@
                 <span asp-validation-for="Caparra" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Tariffa" class="control-label"></label>
+                <label asp-for="ClienteId" class="control-label">Cliente</label>
+                <select asp-for="ClienteId" class="form-control" asp-items="@(new SelectList(ViewBag.Clienti, "Id", "Cognome"))"></select>
+                <span asp-validation-for="ClienteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CameraId" class="control-label">Tipologia Camera</label>
+                <select asp-for="CameraId" class="form-control" asp-items="@(new SelectList(ViewBag.Camere, "Id", "Tipologia"))"></select>
+                <span asp-validation-for="CameraId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tariffa" class="control-label">Tariffa Giornaliera</label>
                 <input asp-for="Tariffa" class="form-control" readonly />
                 <span asp-validation-for="Tariffa" class="text-danger"></span>
             </div>
@@ -53,22 +63,12 @@
                 <span asp-validation-for="TipologiaSoggiorno" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ClienteId" class="control-label"></label>
-                <select asp-for="ClienteId" class="form-control" asp-items="@(new SelectList(ViewBag.Clienti, "Id", "Cognome"))"></select>
-                <span asp-validation-for="ClienteId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CameraId" class="control-label"></label>
-                <select asp-for="CameraId" class="form-control" asp-items="@(new SelectList(ViewBag.Camere, "Id", "Descrizione"))"></select>
-                <span asp-validation-for="CameraId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Servizi Aggiuntivi</label>
-                @foreach (var servizio in (IEnumerable<ProgettoS6GestionaleHotelSabrinaCinque.Models.Servizio>)ViewBag.Servizi)
+                <label class="control-label">Servizi</label>
+                @foreach (var servizio in ViewBag.Servizi)
                 {
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="ServiziSelezionati" value="@servizio.Id" @(Model.ServiziSelezionati.Contains(servizio.Id) ? "checked" : "") />
-                        <label class="form-check-label">@servizio.Descrizione - @servizio.Prezzo €</label>
+                        <input class="form-check-input" type="checkbox" value="@servizio.Id" id="servizio_@servizio.Id" name="ServiziSelezionati" @(Model.ServiziSelezionati.Contains(servizio.Id) ? "checked" : "") />
+                        <label class="form-check-label" for="servizio_@servizio.Id">@servizio.Descrizione</label>
                     </div>
                 }
             </div>
@@ -80,14 +80,21 @@
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $("#CameraId").change(function () {
+            $('#CameraId').change(function () {
                 var cameraId = $(this).val();
-                $.getJSON('@Url.Action("GetCameraPrice", "Prenotazioni")', { id: cameraId }, function (data) {
-                    $("#Tariffa").val(data);
-                });
+                if (cameraId) {
+                    $.getJSON('@Url.Action("GetCameraPrice", "Prenotazioni")/' + cameraId, function (data) {
+                        $('#Tariffa').val(data);
+                    });
+                } else {
+                    $('#Tariffa').val('');
+                }
             });
+
+            $('#CameraId').trigger('change');
         });
     </script>
 }

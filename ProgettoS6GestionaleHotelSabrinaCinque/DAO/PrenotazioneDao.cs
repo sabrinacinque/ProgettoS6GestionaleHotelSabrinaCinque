@@ -192,17 +192,20 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
+
+                // Prima eliminiamo i record correlati nella tabella Prenotazioni_Servizi,altrimenti mi dava conflitto con l'eliminazione della prenotazione 
+                var deleteServiziQuery = "DELETE FROM Prenotazioni_Servizi WHERE prenotazione_id = @prenotazione_id";
+                using (var cmd = new SqlCommand(deleteServiziQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@prenotazione_id", id);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Poi eliminiamo la prenotazione
                 var deleteQuery = "DELETE FROM Prenotazioni WHERE Id = @Id";
                 using (var cmd = new SqlCommand(deleteQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                }
-
-                var deleteServiziQuery = "DELETE FROM Prenotazioni_Servizi WHERE PrenotazioneId = @PrenotazioneId";
-                using (var cmd = new SqlCommand(deleteServiziQuery, conn))
-                {
-                    cmd.Parameters.AddWithValue("@PrenotazioneId", id);
                     cmd.ExecuteNonQuery();
                 }
             }
