@@ -1,28 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProgettoS6GestionaleHotelSabrinaCinque.DAO;
 using ProgettoS6GestionaleHotelSabrinaCinque.Models;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 {
+    [Authorize(Policy = "GeneralAccessPolicy")]
     public class PrenotazioniController : Controller
     {
         private readonly IPrenotazioneDao _prenotazioneDao;
         private readonly IClienteDao _clienteDao;
         private readonly ICameraDao _cameraDao;
-        private readonly ILogger<PrenotazioniController> _logger;
+        private readonly IServizioDao _servizioDao;
 
-
-
-        public PrenotazioniController(IPrenotazioneDao prenotazioneDao, IClienteDao clienteDao, ICameraDao cameraDao, ILogger<PrenotazioniController> logger)
+        public PrenotazioniController(IPrenotazioneDao prenotazioneDao, IClienteDao clienteDao, ICameraDao cameraDao, IServizioDao servizioDao)
         {
             _prenotazioneDao = prenotazioneDao;
             _clienteDao = clienteDao;
             _cameraDao = cameraDao;
-            _logger = logger;
-
+            _servizioDao = servizioDao;
         }
 
         public IActionResult Index()
@@ -31,11 +28,30 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             return View(prenotazioni);
         }
 
+        public IActionResult Details(int id)
+        {
+            var prenotazione = _prenotazioneDao.GetById(id);
+            if (prenotazione == null)
+            {
+                return NotFound();
+            }
+            prenotazione.Servizi = _servizioDao.GetByPrenotazioneId(id).ToList();
+            return View(prenotazione);
+        }
+
         public IActionResult Create()
         {
             ViewBag.Clienti = _clienteDao.GetAll();
             ViewBag.Camere = _cameraDao.GetAll();
-            return View();
+            ViewBag.Servizi = _servizioDao.GetAll();
+
+            var prenotazione = new Prenotazione
+            {
+                Anno = 2024,
+                NumeroProgressivo = _prenotazioneDao.GetLastId() + 1 // Impostare il numero progressivo come ultimo ID + 1
+            };
+
+            return View(prenotazione);
         }
 
         [HttpPost]
@@ -44,13 +60,12 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
         {
             if (ModelState.IsValid)
             {
-                prenotazione.Cliente = _clienteDao.GetById(prenotazione.ClienteId);
-                prenotazione.Camera = _cameraDao.GetById(prenotazione.CameraId);
                 _prenotazioneDao.Add(prenotazione);
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Clienti = _clienteDao.GetAll();
             ViewBag.Camere = _cameraDao.GetAll();
+            ViewBag.Servizi = _servizioDao.GetAll();
             return View(prenotazione);
         }
 
@@ -61,8 +76,11 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             {
                 return NotFound();
             }
+            prenotazione.ServiziSelezionati = _servizioDao.GetByPrenotazioneId(id).Select(s => s.Id).ToList();
+
             ViewBag.Clienti = _clienteDao.GetAll();
             ViewBag.Camere = _cameraDao.GetAll();
+            ViewBag.Servizi = _servizioDao.GetAll();
             return View(prenotazione);
         }
 
@@ -70,75 +88,19 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Prenotazione prenotazione)
         {
-            _logger.LogInformation("Inizio metodo Edit");
-
             if (id != prenotazione.Id)
             {
-                _logger.LogWarning("ID mismatch: id != prenotazione.Id");
                 return BadRequest();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _logger.LogInformation("ModelState is valid");
-                    _logger.LogInformation($"Prenotazione ID: {prenotazione.Id}, ClienteId: {prenotazione.ClienteId}, CameraId: {prenotazione.CameraId}");
-
-                    prenotazione.Cliente = _clienteDao.GetById(prenotazione.ClienteId);
-                    prenotazione.Camera = _cameraDao.GetById(prenotazione.CameraId);
-
-                    if (prenotazione.Cliente == null)
-                    {
-                        _logger.LogWarning("Cliente non trovato");
-                        ModelState.AddModelError("ClienteId", "Cliente non trovato");
-                    }
-
-                    if (prenotazione.Camera == null)
-                    {
-                        _logger.LogWarning("Camera non trovata");
-                        ModelState.AddModelError("CameraId", "Camera non trovata");
-                    }
-
-                    if (prenotazione.Cliente != null && prenotazione.Camera != null)
-                    {
-                        _prenotazioneDao.Update(prenotazione);
-                        _logger.LogInformation("Prenotazione aggiornata con successo");
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Errore durante l'aggiornamento della prenotazione: {ex.Message}");
-                    ModelState.AddModelError("", "Errore durante l'aggiornamento della prenotazione.");
-                }
+                _prenotazioneDao.Update(prenotazione);
+                return RedirectToAction(nameof(Index));
             }
-            else
-            {
-                _logger.LogWarning("ModelState non è valido.");
-                foreach (var modelState in ModelState)
-                {
-                    foreach (var error in modelState.Value.Errors)
-                    {
-                        _logger.LogWarning($"Errore nel campo {modelState.Key}: {error.ErrorMessage}");
-                    }
-                }
-            }
-
             ViewBag.Clienti = _clienteDao.GetAll();
             ViewBag.Camere = _cameraDao.GetAll();
-            return View(prenotazione);
-        }
-
-
-
-        public IActionResult Details(int id)
-        {
-            var prenotazione = _prenotazioneDao.GetById(id);
-            if (prenotazione == null)
-            {
-                return NotFound();
-            }
+            ViewBag.Servizi = _servizioDao.GetAll();
             return View(prenotazione);
         }
 
@@ -154,6 +116,17 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             {
                 return Json(new { success = false, message = ex.Message });
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetCameraPrice(int id)
+        {
+            var camera = _cameraDao.GetById(id);
+            if (camera == null)
+            {
+                return NotFound();
+            }
+            return Json(camera.Prezzo);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using ProgettoS6GestionaleHotelSabrinaCinque.Models;
 
@@ -28,9 +29,10 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                     {
                         var camera = new Camera
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("id")),
-                            Descrizione = reader.GetString(reader.GetOrdinal("descrizione")),
-                            Tipologia = reader.GetString(reader.GetOrdinal("tipologia"))
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Descrizione = reader.GetString(reader.GetOrdinal("Descrizione")),
+                            Tipologia = reader.GetString(reader.GetOrdinal("Tipologia")),
+                            Prezzo = reader.IsDBNull(reader.GetOrdinal("Prezzo")) ? 0 : reader.GetDecimal(reader.GetOrdinal("Prezzo"))
                         };
 
                         camere.Add(camera);
@@ -48,19 +50,20 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var query = "SELECT * FROM Camere WHERE id = @id";
+                var query = "SELECT * FROM Camere WHERE Id = @Id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@Id", id);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             camera = new Camera
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("id")),
-                                Descrizione = reader.GetString(reader.GetOrdinal("descrizione")),
-                                Tipologia = reader.GetString(reader.GetOrdinal("tipologia"))
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Descrizione = reader.GetString(reader.GetOrdinal("Descrizione")),
+                                Tipologia = reader.GetString(reader.GetOrdinal("Tipologia")),
+                                Prezzo = reader.IsDBNull(reader.GetOrdinal("Prezzo")) ? 0 : reader.GetDecimal(reader.GetOrdinal("Prezzo"))
                             };
                         }
                     }
@@ -76,12 +79,13 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             {
                 conn.Open();
                 var query = @"
-                    INSERT INTO Camere (descrizione, tipologia)
-                    VALUES (@descrizione, @tipologia)";
+                    INSERT INTO Camere (Descrizione, Tipologia, Prezzo)
+                    VALUES (@Descrizione, @Tipologia, @Prezzo)";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@descrizione", camera.Descrizione);
-                    cmd.Parameters.AddWithValue("@tipologia", camera.Tipologia);
+                    cmd.Parameters.AddWithValue("@Descrizione", camera.Descrizione);
+                    cmd.Parameters.AddWithValue("@Tipologia", camera.Tipologia);
+                    cmd.Parameters.AddWithValue("@Prezzo", camera.Prezzo);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -94,14 +98,16 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 conn.Open();
                 var query = @"
                     UPDATE Camere SET 
-                    descrizione = @descrizione, 
-                    tipologia = @tipologia
-                    WHERE id = @id";
+                    Descrizione = @Descrizione, 
+                    Tipologia = @Tipologia,
+                    Prezzo = @Prezzo
+                    WHERE Id = @Id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@descrizione", camera.Descrizione);
-                    cmd.Parameters.AddWithValue("@tipologia", camera.Tipologia);
-                    cmd.Parameters.AddWithValue("@id", camera.Id);
+                    cmd.Parameters.AddWithValue("@Descrizione", camera.Descrizione);
+                    cmd.Parameters.AddWithValue("@Tipologia", camera.Tipologia);
+                    cmd.Parameters.AddWithValue("@Prezzo", camera.Prezzo);
+                    cmd.Parameters.AddWithValue("@Id", camera.Id);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -112,10 +118,10 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var query = "DELETE FROM Camere WHERE id = @id";
+                var query = "DELETE FROM Camere WHERE Id = @Id";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@Id", id);
                     cmd.ExecuteNonQuery();
                 }
             }

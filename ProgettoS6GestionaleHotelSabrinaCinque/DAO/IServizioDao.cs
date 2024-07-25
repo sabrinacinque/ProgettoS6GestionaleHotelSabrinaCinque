@@ -10,5 +10,6 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
         void Add(Servizio servizio);
         void Update(Servizio servizio);
         void Delete(int id);
+        IEnumerable<Servizio> GetByPrenotazioneId(int prenotazioneId);
     }
 }

@@ -11,10 +11,13 @@
 );
 
 CREATE TABLE [dbo].[Camere] (
-    [id] INT IDENTITY(1,1) PRIMARY KEY,
-    [descrizione] TEXT NOT NULL,
-    [tipologia] VARCHAR(20) NOT NULL
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [Descrizione] NVARCHAR(255) NOT NULL,
+    [Tipologia] NVARCHAR(50) NOT NULL,
+    [Prezzo] DECIMAL(10, 2) NOT NULL
 );
+
+DROP table CAMERE;
 
 CREATE TABLE [dbo].[Users] (
     [id] INT IDENTITY(1,1) PRIMARY KEY,
@@ -65,11 +68,13 @@ VALUES
 ('RSSMRA80A01H501Z', 'Rossi', 'Mario', 'Milano', 'MI', 'mario.rossi@example.com', '3291234567'),
 ('VRDLGI85C09F205Z', 'Verdi', 'Luigi', 'Roma', 'RM', 'luigi.verdi@example.com', '3391234567');
 
--- Inserimento dati nella tabella Camere
-INSERT INTO [dbo].[Camere] ([descrizione], [tipologia])
+-- Inserimento dati nella tabella Camere(ho aggiunto il prezzo di ogni stanza , mi sembrava sensato aggiungerlo qui) 
+INSERT INTO [dbo].[Camere] ([Descrizione], [Tipologia], [Prezzo])
 VALUES 
-('Camera singola con vista mare', 'singola'),
-('Camera doppia con balcone', 'doppia');
+('Camera singola con vista mare', 'singola', 75.00),
+('Camera doppia con balcone', 'doppia', 120.00),
+('Suite presidenziale', 'suite', 300.00);
+
 
 -- Inserimento dati nella tabella Users
 INSERT INTO [dbo].[Users] ([username], [password], [role])
@@ -167,6 +172,11 @@ FROM
 WHERE 
     tipologia_soggiorno = 'pensione completa';
 
-SELECT * FROM Clienti;
+
+
+
 
 USE GestionaleHotel;
+
+
+

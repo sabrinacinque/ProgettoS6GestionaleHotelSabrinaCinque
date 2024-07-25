@@ -4,35 +4,29 @@
     ViewData["Title"] = "Dettagli Prenotazione";
 }
 
-<h2>Dettagli Prenotazione</h2>
+<h1>Dettagli Prenotazione</h1>
 
 <div>
     <h4>Prenotazione</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Cliente.Cognome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cliente.Cognome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Cliente.Nome)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cliente.Nome)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Camera.Descrizione)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Camera.Descrizione)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DataPrenotazione)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DataPrenotazione)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumeroProgressivo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumeroProgressivo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Anno)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Anno)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Dal)
@@ -47,14 +41,56 @@
             @Html.DisplayFor(model => model.Al)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Caparra)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Caparra)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tariffa)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Tariffa)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TipologiaSoggiorno)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TipologiaSoggiorno)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cliente.Cognome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cliente.Cognome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Camera.Descrizione)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Camera.Descrizione)
+        </dd>
+        <dt class="col-sm-2">
+            Servizi Aggiuntivi
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Servizi != null && Model.Servizi.Count > 0)
+            {
+                <ul>
+                    @foreach (var servizio in Model.Servizi)
+                    {
+                        <li>@servizio.Descrizione - @servizio.Prezzo €</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Nessun servizio aggiuntivo selezionato.</p>
+            }
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Modifica</a> |
-    <a asp-action="Index" class="btn btn-secondary">Indietro</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifica</a> |
+    <a asp-action="Index" class="btn btn-primary">Indietro</a>
 </div>

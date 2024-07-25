@@ -120,5 +120,40 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 }
             }
         }
+
+        public IEnumerable<Servizio> GetByPrenotazioneId(int prenotazioneId)
+        {
+            var servizi = new List<Servizio>();
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var query = @"
+                    SELECT s.*
+                    FROM Servizi s
+                    JOIN Prenotazioni_Servizi ps ON s.id = ps.servizio_id
+                    WHERE ps.prenotazione_id = @prenotazione_id";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@prenotazione_id", prenotazioneId);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var servizio = new Servizio
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                                Descrizione = reader.GetString(reader.GetOrdinal("descrizione")),
+                                Prezzo = reader.GetDecimal(reader.GetOrdinal("prezzo"))
+                            };
+
+                            servizi.Add(servizio);
+                        }
+                    }
+                }
+            }
+
+            return servizi;
+        }
     }
 }

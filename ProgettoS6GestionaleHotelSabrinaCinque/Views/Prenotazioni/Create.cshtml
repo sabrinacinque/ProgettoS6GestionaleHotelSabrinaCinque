@@ -18,12 +18,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="NumeroProgressivo" class="control-label"></label>
-                <input asp-for="NumeroProgressivo" class="form-control" />
+                <input asp-for="NumeroProgressivo" class="form-control" readonly />
                 <span asp-validation-for="NumeroProgressivo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Anno" class="control-label"></label>
-                <input asp-for="Anno" class="form-control" />
+                <input asp-for="Anno" class="form-control" value="2024" readonly />
                 <span asp-validation-for="Anno" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -43,7 +43,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Tariffa" class="control-label"></label>
-                <input asp-for="Tariffa" class="form-control" />
+                <input asp-for="Tariffa" class="form-control" readonly />
                 <span asp-validation-for="Tariffa" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -62,8 +62,31 @@
                 <span asp-validation-for="CameraId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label>Servizi Aggiuntivi</label>
+                @foreach (var servizio in (IEnumerable<ProgettoS6GestionaleHotelSabrinaCinque.Models.Servizio>)ViewBag.Servizi)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="ServiziSelezionati" value="@servizio.Id" />
+                        <label class="form-check-label">@servizio.Descrizione - @servizio.Prezzo €</label>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Crea" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#CameraId").change(function () {
+                var cameraId = $(this).val();
+                $.getJSON('@Url.Action("GetCameraPrice", "Prenotazioni")', { id: cameraId }, function (data) {
+                    $("#Tariffa").val(data);
+                });
+            });
+        });
+    </script>
+}

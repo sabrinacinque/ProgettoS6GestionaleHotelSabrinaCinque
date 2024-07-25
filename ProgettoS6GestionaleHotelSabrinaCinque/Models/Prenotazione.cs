@@ -25,5 +25,8 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Models
 
         public Cliente? Cliente { get; set; }
         public Camera? Camera { get; set; }
+
+        public List<int> ServiziSelezionati { get; set; } = new List<int>();
+        public List<Servizio>? Servizi { get; set; }
     }
 }

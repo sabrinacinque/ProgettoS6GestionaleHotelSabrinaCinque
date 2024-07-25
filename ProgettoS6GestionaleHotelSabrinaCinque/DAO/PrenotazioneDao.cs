@@ -22,7 +22,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             {
                 connection.Open();
                 var query = @"
-                    SELECT p.*, c.id AS cliente_id, c.cognome, c.nome, cam.id AS camera_id, cam.descrizione 
+                    SELECT p.*, c.id AS cliente_id, c.cognome, c.nome, cam.id AS camera_id, cam.descrizione, cam.prezzo 
                     FROM Prenotazioni p
                     JOIN Clienti c ON p.cliente_id = c.id
                     JOIN Camere cam ON p.camera_id = cam.id";
@@ -54,8 +54,10 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                                 Camera = new Camera
                                 {
                                     Id = (int)reader["camera_id"],
-                                    Descrizione = (string)reader["descrizione"]
-                                }
+                                    Descrizione = (string)reader["descrizione"],
+                                    Prezzo = (decimal)reader["prezzo"]
+                                },
+                                Servizi = new List<Servizio>()
                             };
                             prenotazioni.Add(prenotazione);
                         }
@@ -74,7 +76,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             {
                 connection.Open();
                 var query = @"
-                    SELECT p.*, c.id AS cliente_id, c.cognome, c.nome, cam.id AS camera_id, cam.descrizione 
+                    SELECT p.*, c.id AS cliente_id, c.cognome, c.nome, cam.id AS camera_id, cam.descrizione, cam.prezzo 
                     FROM Prenotazioni p
                     JOIN Clienti c ON p.cliente_id = c.id
                     JOIN Camere cam ON p.camera_id = cam.id
@@ -108,8 +110,10 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                                 Camera = new Camera
                                 {
                                     Id = (int)reader["camera_id"],
-                                    Descrizione = (string)reader["descrizione"]
-                                }
+                                    Descrizione = (string)reader["descrizione"],
+                                    Prezzo = (decimal)reader["prezzo"]
+                                },
+                                Servizi = new List<Servizio>()
                             };
                         }
                     }
@@ -126,7 +130,8 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                 connection.Open();
                 var query = @"
                     INSERT INTO Prenotazioni (data_prenotazione, numero_progressivo, anno, dal, al, caparra, tariffa, tipologia_soggiorno, cliente_id, camera_id)
-                    VALUES (@data_prenotazione, @numero_progressivo, @anno, @dal, @al, @caparra, @tariffa, @tipologia_soggiorno, @cliente_id, @camera_id)";
+                    VALUES (@data_prenotazione, @numero_progressivo, @anno, @dal, @al, @caparra, @tariffa, @tipologia_soggiorno, @cliente_id, @camera_id);
+                    SELECT SCOPE_IDENTITY();";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@data_prenotazione", prenotazione.DataPrenotazione);
@@ -139,8 +144,9 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                     command.Parameters.AddWithValue("@tipologia_soggiorno", prenotazione.TipologiaSoggiorno);
                     command.Parameters.AddWithValue("@cliente_id", prenotazione.ClienteId);
                     command.Parameters.AddWithValue("@camera_id", prenotazione.CameraId);
-                    command.ExecuteNonQuery();
+                    prenotazione.Id = Convert.ToInt32(command.ExecuteScalar());
                 }
+                UpdateServizi(prenotazione.Id, prenotazione.ServiziSelezionati);
             }
         }
 
@@ -150,18 +156,18 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
             {
                 connection.Open();
                 var query = @"
-            UPDATE Prenotazioni
-            SET data_prenotazione = @data_prenotazione,
-                numero_progressivo = @numero_progressivo,
-                anno = @anno,
-                dal = @dal,
-                al = @al,
-                caparra = @caparra,
-                tariffa = @tariffa,
-                tipologia_soggiorno = @tipologia_soggiorno,
-                cliente_id = @cliente_id,
-                camera_id = @camera_id
-            WHERE id = @id";
+                    UPDATE Prenotazioni
+                    SET data_prenotazione = @data_prenotazione,
+                        numero_progressivo = @numero_progressivo,
+                        anno = @anno,
+                        dal = @dal,
+                        al = @al,
+                        caparra = @caparra,
+                        tariffa = @tariffa,
+                        tipologia_soggiorno = @tipologia_soggiorno,
+                        cliente_id = @cliente_id,
+                        camera_id = @camera_id
+                    WHERE id = @id";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@id", prenotazione.Id);
@@ -175,26 +181,73 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.DAO
                     command.Parameters.AddWithValue("@tipologia_soggiorno", prenotazione.TipologiaSoggiorno);
                     command.Parameters.AddWithValue("@cliente_id", prenotazione.ClienteId);
                     command.Parameters.AddWithValue("@camera_id", prenotazione.CameraId);
-
-                    int rowsAffected = command.ExecuteNonQuery();
-                    Console.WriteLine($"Numero di righe aggiornate: {rowsAffected}");
+                    command.ExecuteNonQuery();
                 }
+                UpdateServizi(prenotazione.Id, prenotazione.ServiziSelezionati);
             }
         }
-
 
         public void Delete(int id)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var conn = new SqlConnection(_connectionString))
             {
-                connection.Open();
-                var query = "DELETE FROM Prenotazioni WHERE id = @id";
-                using (var command = new SqlCommand(query, connection))
+                conn.Open();
+                var deleteQuery = "DELETE FROM Prenotazioni WHERE Id = @Id";
+                using (var cmd = new SqlCommand(deleteQuery, conn))
                 {
-                    command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+
+                var deleteServiziQuery = "DELETE FROM Prenotazioni_Servizi WHERE PrenotazioneId = @PrenotazioneId";
+                using (var cmd = new SqlCommand(deleteServiziQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PrenotazioneId", id);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
+
+        public int GetLastId()
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var query = "SELECT ISNULL(MAX(Id), 0) FROM Prenotazioni";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public void UpdateServizi(int prenotazioneId, List<int> serviziSelezionati)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var deleteQuery = "DELETE FROM Prenotazioni_Servizi WHERE prenotazione_id = @prenotazione_id";
+                using (var cmd = new SqlCommand(deleteQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@prenotazione_id", prenotazioneId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                if (serviziSelezionati != null && serviziSelezionati.Count > 0)
+                {
+                    var insertQuery = "INSERT INTO Prenotazioni_Servizi (prenotazione_id, servizio_id) VALUES (@prenotazione_id, @servizio_id)";
+                    foreach (var servizioId in serviziSelezionati)
+                    {
+                        using (var cmd = new SqlCommand(insertQuery, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@prenotazione_id", prenotazioneId);
+                            cmd.Parameters.AddWithValue("@servizio_id", servizioId);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

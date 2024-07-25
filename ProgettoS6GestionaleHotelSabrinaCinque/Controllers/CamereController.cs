@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProgettoS6GestionaleHotelSabrinaCinque.DAO;
 using ProgettoS6GestionaleHotelSabrinaCinque.Models;
-using System.Diagnostics;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 {
@@ -18,16 +17,8 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 
         public IActionResult Index()
         {
-            try
-            {
-                var camere = _cameraDao.GetAll();
-                return View(camere);
-            }
-            catch (Exception ex)
-            {
-                // Log dell'errore (opzionale)
-                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-            }
+            var camere = _cameraDao.GetAll();
+            return View(camere);
         }
 
         public IActionResult Details(int id)
@@ -94,7 +85,6 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             }
             catch (Exception ex)
             {
-                // Log dell'errore (opzionale)
                 return Json(new { success = false, message = ex.Message });
             }
         }
