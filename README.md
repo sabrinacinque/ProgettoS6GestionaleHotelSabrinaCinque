@@ -1,8 +1,8 @@
 ****PER IL PROF****
-Inizialmente, se non si fa il login , è visibile solo la homepage con i link e la pagina di login( se si clicca su qualche link, automaticamente si viene reindirizzati alla gona di login).
+Inizialmente, se non si fa il login , è visibile solo la homepage con i link e la pagina di login( se si clicca su qualche link, automaticamente si viene reindirizzati al login).
 Ho previsto due login diversi per implementare la questione delle policy e delle autorizazioni:l'admin ( inteso ccome amministratore) che può fare e vedere tutto e il recepionist(inteso come il personale che ci lavora) che non può accedere 
 alla creazione di camere e sevizi ,cosa che può fare solo l'admin.Può però aggiornare/aggiungere/cancellare un cliente e fare le crud sulle prenotazioni.
-Nella tabella prenotazioni , ho previsto un tastino "checkout" dove c'è il riepilogo della prenotazione, l'importo di quanto deve essere ancora versato...e un tastino conn un download pdf ( che scarica quindi un file pdf con il riepilogo, ho pensato eventualmente da stampare e da dare al "cliente").
+Nella tabella prenotazioni , ho previsto un tastino "checkout" dove c'è il riepilogo della prenotazione, l'importo di quanto deve essere ancora versato e un tastino con un download pdf ( che scarica quindi un file pdf con il riepilogo, ho pensato eventualmente da stampare e da dare al "cliente").
 Nel metodo per il download del file,dentro a prenotazioniController, ho specificato quale pacchetto ho scaricato per implementare la funzione di download.
 
 Se si vuole testare sul web, consiglio di loggarsi direttamente come admin in modo che si ha accesso a tutto.
