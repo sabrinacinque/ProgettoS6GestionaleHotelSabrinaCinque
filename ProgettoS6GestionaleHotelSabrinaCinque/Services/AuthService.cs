@@ -10,7 +10,6 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Services
         {
             new User { Id = 1, Username = "admin", Password = "adminpass", Role = "admin" },
             new User { Id = 2, Username = "receptionist", Password = "receptionpass", Role = "receptionist" },
-            new User { Id = 3, Username = "manager", Password = "managerpass", Role = "manager" }
         };
 
         public User Login(string username, string password)
