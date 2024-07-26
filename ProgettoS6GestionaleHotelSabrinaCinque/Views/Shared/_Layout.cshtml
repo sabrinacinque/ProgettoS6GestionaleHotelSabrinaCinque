@@ -10,7 +10,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-light">
-            <a class="navbar-brand" href="@Url.Action("Index", "Home")">Gestionale Hotel</a>
+            <a class="navbar-brand linkNav" href="@Url.Action("Index", "Home")">Gestionale Hotel</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -19,19 +19,19 @@
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Clienti" asp-action="Index">Anagrafica Cliente</a>
+                            <a class="nav-link linkNav" asp-controller="Clienti" asp-action="Index">Anagrafica Cliente</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Camere" asp-action="Index">Tipologia Camere</a>
+                            <a class="nav-link linkNav" asp-controller="Camere" asp-action="Index">Tipologia Camere</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Servizi" asp-action="Index">Servizi</a>
+                            <a class="nav-link linkNav" asp-controller="Servizi" asp-action="Index">Servizi</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Prenotazioni" asp-action="Index">Prenotazioni</a>
+                            <a class="nav-link linkNav" asp-controller="Prenotazioni" asp-action="Index">Prenotazioni</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Ricerca" asp-action="Index">Ricerca</a>
+                            <a class="nav-link linkNav" asp-controller="Ricerca" asp-action="Index">Ricerca</a>
                         </li>
                     }
                 </ul>
@@ -39,13 +39,13 @@
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Logout">Logout (@User.Identity.Name)</a>
+                            <a class="nav-link linkNav" asp-controller="Account" asp-action="Logout">Logout (@User.Identity.Name)</a>
                         </li>
                     }
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="nav-link linkNav" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
                     }
                 </ul>
@@ -57,12 +57,6 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - ProgettoS6GestionaleHotelSabrinaCinque
-        </div>
-    </footer>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

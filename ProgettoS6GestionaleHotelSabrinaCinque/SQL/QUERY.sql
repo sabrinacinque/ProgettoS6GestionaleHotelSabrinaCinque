@@ -13,11 +13,10 @@
 CREATE TABLE [dbo].[Camere] (
     [Id] INT IDENTITY(1,1) PRIMARY KEY,
     [Descrizione] NVARCHAR(255) NOT NULL,
-    [Tipologia] NVARCHAR(50) NOT NULL,
+    [Tipologia] NVARCHAR(255) NOT NULL,
     [Prezzo] DECIMAL(10, 2) NOT NULL
 );
 
-DROP table CAMERE;
 
 CREATE TABLE [dbo].[Users] (
     [id] INT IDENTITY(1,1) PRIMARY KEY,
@@ -38,10 +37,11 @@ CREATE TABLE [dbo].[Prenotazioni] (
     [al] DATE NOT NULL,
     [caparra] DECIMAL(10, 2) NOT NULL,
     [tariffa] DECIMAL(10, 2) NOT NULL,
-    [tipologia_soggiorno] VARCHAR(50) NOT NULL,
+    [tipologia_soggiorno] VARCHAR(255) NOT NULL,
     FOREIGN KEY ([cliente_id]) REFERENCES [dbo].[Clienti]([id]),
-    FOREIGN KEY ([camera_id]) REFERENCES [dbo].[Camere]([id])
-);
+    FOREIGN KEY ([camera_id]) REFERENCES [dbo].[Camere]([id]),
+    CONSTRAINT chk_tipologia_soggiorno CHECK (tipologia_soggiorno IN ('mezza pensione', 'pensione completa', 'pernottamento con prima colazione'))
+);--per la tipologia soggiorno,essendo valori fissi , non implementabili o cancellabili, non ho voluto fare una tabella, ma metterli così 
 
 
 CREATE TABLE [dbo].[Servizi] (
@@ -80,8 +80,7 @@ VALUES
 INSERT INTO [dbo].[Users] ([username], [password], [role])
 VALUES 
 ('admin', 'adminpass', 'admin'),
-('receptionist', 'receptionpass', 'receptionist'),
-('manager', 'managerpass', 'manager');
+('receptionist', 'receptionpass', 'receptionist');
 
 -- Inserimento dati nella tabella Prenotazioni
 INSERT INTO [dbo].[Prenotazioni] 
@@ -107,76 +106,12 @@ VALUES
     (2, 2),
     (2, 3);
 
+    SELECT * FROM SERVIZI;
+    SELECT * FROM CLIENTI;
+    SELECT * FROM Camere;
+    USE GestionaleHotelDefinitivo;
+    SELECT * FROM USERS;
 
---query da salvare
--- Dettaglio della prenotazione al checkout
-SELECT 
-    c.descrizione AS numero_camera,
-    p.dal,
-    p.al,
-    p.tariffa
-FROM 
-    [dbo].[Prenotazioni] p
-JOIN 
-    [dbo].[Camere] c ON p.camera_id = c.id
-WHERE 
-    p.id = 1; -- qu mettiamo poi l'id della prenotazione che vogliamo 
-
-
---2. Query per ottenere la lista di tutti i servizi aggiuntivi richiesti durante il soggiorno
-
-SELECT 
-    s.descrizione,
-    ps.quantità,
-    ps.prezzo,
-    ps.data
-FROM 
-    [dbo].[Prenotazioni_Servizi] ps
-JOIN 
-    [dbo].[Servizi] s ON ps.servizio_id = s.id
-WHERE 
-    ps.prenotazione_id = 2; -- Sostituire con l'ID della prenotazione specifica
-
-
---3. Query per ottenere l'importo da saldare (tariffa – caparra + somma di tutti i servizi aggiuntivi)
-
-SELECT 
-    p.tariffa - p.caparra + ISNULL(SUM(ps.quantità * ps.prezzo), 0) AS importo_da_saldare
-FROM 
-    [dbo].[Prenotazioni] p
-LEFT JOIN 
-    [dbo].[Prenotazioni_Servizi] ps ON p.id = ps.prenotazione_id
-WHERE 
-    p.id = 1 -- Sostituire con l'ID della prenotazione specifica
-GROUP BY 
-    p.tariffa, p.caparra;
-
-
--- Ricerca prenotazioni per codice fiscale
-SELECT *
-FROM 
-    [dbo].[Prenotazioni] p
-JOIN 
-    [dbo].[Clienti] cl ON p.cliente_id = cl.id
-JOIN 
-    [dbo].[Camere] c ON p.camera_id = c.id
-WHERE 
-    cl.codice_fiscale = @codice_fiscale; -- da sostituire poi con il codice fiscale in questione
-
-
-    -- Numero totale di prenotazioni per soggiorni di tipo “pensione completa”
-SELECT 
-    COUNT(*) AS tot_pren_con_pensione_completa
-FROM 
-    [dbo].[Prenotazioni]
-WHERE 
-    tipologia_soggiorno = 'pensione completa';
-
-
-
-
-
-USE GestionaleHotel;
-
+ 
 
 

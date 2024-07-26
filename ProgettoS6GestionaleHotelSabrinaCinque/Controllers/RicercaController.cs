@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProgettoS6GestionaleHotelSabrinaCinque.DAO;
 using ProgettoS6GestionaleHotelSabrinaCinque.Models;
 
 namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 {
+    [Authorize(Policy = "GeneralAccessPolicy")]
+
     public class RicercaController : Controller
     {
         private readonly IPrenotazioneDao _prenotazioneDao;

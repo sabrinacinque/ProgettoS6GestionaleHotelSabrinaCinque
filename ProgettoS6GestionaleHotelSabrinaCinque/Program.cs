@@ -21,10 +21,7 @@ builder.Services
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("admin"));
-    options.AddPolicy("ReceptionistPolicy", policy => policy.RequireRole("receptionist", "manager"));
-    options.AddPolicy("ManagerPolicy", policy => policy.RequireRole("manager"));
-    options.AddPolicy("GeneralAccessPolicy", policy =>
-        policy.RequireRole("admin", "receptionist", "manager"));
+    options.AddPolicy("GeneralAccessPolicy", policy =>policy.RequireRole("admin", "receptionist"));
 });
 
 // Configurazione del servizio di gestione delle autenticazioni

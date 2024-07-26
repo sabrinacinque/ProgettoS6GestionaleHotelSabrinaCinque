@@ -44,14 +44,14 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.Clienti = _clienteDao.GetAll();
+            ViewBag.Clienti = _clienteDao.GetAll();//mi servivano le viste perchè non volevo dovermi ricordare l'id da collegare ma ho fatto con i select
             ViewBag.Camere = _cameraDao.GetAll();
             ViewBag.Servizi = _servizioDao.GetAll();
 
             var prenotazione = new Prenotazione
             {
                 Anno = 2024,
-                NumeroProgressivo = _prenotazioneDao.GetLastId() + 1 // Impostare il numero progressivo come ultimo ID + 1
+                NumeroProgressivo = _prenotazioneDao.GetLastId() + 1 // volevo che anno e numero progressivo fossero inseriti autonomamente: il numero progressivo come ultimo ID + 1 e l'anno sempre 2024(gli input infatti nel create non sono editabili)
             };
 
             return View(prenotazione);
@@ -148,7 +148,7 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             var totaleStanza = prenotazione.Tariffa * giorniSoggiorno;
             decimal extraSoggiorno = 0;
 
-            // Calcola l'extra in base alla tipologia soggiorno
+            // Calcola l'extra in base alla tipologia soggiorno...essendo valori fissi e non implementabili o cancellabili, non ho voluto fare una tabella, ma metterli così 
             switch (prenotazione.TipologiaSoggiorno.ToLower())
             {
                 case "mezza pensione":
@@ -192,7 +192,6 @@ namespace ProgettoS6GestionaleHotelSabrinaCinque.Controllers
             var totaleStanza = prenotazione.Tariffa * giorniSoggiorno;
             decimal extraSoggiorno = 0;
 
-            // Calcola l'extra in base alla tipologia soggiorno
             switch (prenotazione.TipologiaSoggiorno.ToLower())
             {
                 case "mezza pensione":

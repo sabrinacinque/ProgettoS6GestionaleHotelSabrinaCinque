@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Nuova cartella\**" />
+    <Content Remove="wwwroot\Nuova cartella\**" />
+    <EmbeddedResource Remove="wwwroot\Nuova cartella\**" />
+    <None Remove="wwwroot\Nuova cartella\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="SQL\" />
   </ItemGroup>
 
